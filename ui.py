@@ -22,94 +22,43 @@ def print_table(table, title_list):
         None: This function doesn't return anything it only prints to console.
     """
 
-    row_separator = "-"
-    corner_1_and_3 = "/"
-    corner_2_and_4 = "\\"
-    white_space = " "
-    max_len_elements = []
-
-    len_table = len(title_list)*2
-    index = 0
-    
+    table.insert(0, title_list)
+    item_index = 0
     iterations = 0
-    while iterations < len(table):
-        max_len_element = 0
-        for line in table:
-            if index < len(line):
-                if len(line[index]) > max_len_element:
-                    max_len_element = len(line[index])
-                    max_element = line[index]
-        max_len_elements.append(max_element)
-        len_table += max_len_element
-        index += 1
-        iterations += 1
-    upper_bar_lenght = 0
+    longest_elements = []
+    data = "|"
+    row_separator = "|"
+    elements_lenght = 0
+
+    while iterations < len(table[0]):
+        longest_item = 0
+        for item in table:
+            if len(item[item_index]) > longest_item:
+                longest_item = len(item[item_index])
+        item_index += 1
+        iterations +=1
+        longest_elements.append(longest_item)
+
+    for item in table:
+        item_index = 0
+        row_separator = "|"
+        while item_index < len(item):
+            column_lenght = longest_elements[item_index] + 4
+            data += "{0}|".format(item[item_index].center(column_lenght))
+            row_separator += "{0}|".format("-".center(column_lenght, "-"))
+            item_index += 1
+        
+        data += "\n{0}\n|".format(row_separator)
+
+    for element in longest_elements:
+        elements_lenght += element
+
+    upper_bar = "/{0}\\".format("-" * (elements_lenght + 4 * len(title_list) + len(title_list) - 1)) 
+    lower_bar = "\{0}/".format("-" * (elements_lenght + 4 * len(title_list) + len(title_list) - 1)) 
     
-    columns_lenght = []
-    print_titles = "|"
-    index = 0
-    for title in title_list:
-        if len(title) < len(max_len_elements[index]):
-            upper_bar_lenght += len(max_len_elements[index])
-            spaces = len(max_len_elements[index]) + 2
-            white_spaces =  (spaces - len(title))/2
-            if white_spaces % 2 == 0:
-                print_titles += "{0}{1}{0}|".format(white_space*int(white_spaces), title)
-            else:
-                print_titles += "{0}{1}{2}|".format(white_space*int(white_spaces-0.5), title, white_space*int(white_spaces+0.5))
-        elif len(title) >= len(max_len_elements[index]):
-            spaces = len(title) + 2
-            upper_bar_lenght += len(title)
-            print_titles += " {0} |".format(title)
-        columns_lenght.append(spaces)
-        index += 1
-
-    print_row_separator = "|"
-    index = 0
-    for title in title_list:
-        if len(title) <= len(max_len_elements[index]):
-            print_row_separator += "{0}|".format(row_separator * len(max_len_elements[index]) + row_separator * 2)
-        elif len(title) > len(max_len_elements[index]):
-            print_row_separator += "{0}|".format(row_separator * len(title) + row_separator * 2)
-        index += 1
-    print("{0}{1}{2}".format(corner_1_and_3, row_separator * upper_bar_lenght + row_separator * (len(title_list)-1) + row_separator * (len(title_list) * 2), corner_2_and_4))
-    print(print_titles)
-    print(print_row_separator)
-
-    
-    print_data = "|"
-    column_index = 0
-    index = 0
-    count = 0
-    
-
-    while column_index < len(columns_lenght):
-        for line in table:
-            column_index = 0
-            index = 0
-            while index < len(line):
-                spaces = columns_lenght[column_index]
-                white_spaces = (spaces - len(line[index]))/2
-                if white_spaces == 1:
-                    print_data += "{0}{1}{2}|".format(white_space*int(white_spaces+0.5), line[index], white_space*int(white_spaces+0.5))
-                elif len(line[index]) == 1:
-                    print_data += "{0}{1}{0}|".format(white_space*int(white_spaces), line[index])
-                elif white_spaces % 2 == 0:
-                    print_data += "{0}{1}{0}|".format(white_space*int(white_spaces), line[index])
-                elif white_spaces % 2 != 0:
-                    print_data += "{0}{1}{2}|".format(white_space*int(white_spaces-0.5), line[index], white_space*int(white_spaces+0.5))
-                index += 1
-                column_index += 1
-            count+=1
-            # if count == len(columns_lenght):
-            #     print_data += "\n{0}{1}{2}".format(corner_1_and_3, row_separator * upper_bar_lenght + row_separator * (len(title_list)-1) + row_separator * (len(title_list) * 2), corner_2_and_4)
-            # else:
-            print_data += "\n{0}\n|".format(print_row_separator)
-
-    print(print_data)
-    
-
-
+    print(upper_bar)
+    print(data)
+    print(lower_bar)
 
 
 
