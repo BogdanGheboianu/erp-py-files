@@ -1,20 +1,13 @@
 # Do not modify this file
 # run this program (the ERP software) from the terminal from thd root directory of this project
 
-
 import sys
-import ui  # User Interface
-# Store module
+import ui 
 import store
-# Human Resources module
 import hr
-# Tool manager module
 import inventory
-# Accounting module
 import accounting
-# Sales module
 import sales
-# Customer Relationship Management (CRM) module
 import crm
 
 

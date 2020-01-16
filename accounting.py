@@ -19,94 +19,74 @@ import data_manager
 import common
 
 filename = "items.csv"
+title_list = ["id", "month", "day", "year", "type", "amount"]
 
 def start_module():
-    """
-    Starts this module and displays its menu.
-     * User can access default special features from here.
-     * User can go back to main menu from here.
-
-    Returns:
-        None
-    """
-
     table = data_manager.get_table_from_file(filename)
     show_table(table)
-    ui.print_menu("Accounting manager", common.submenu_options(), "Go back to the main menu")
+    ui.print_menu("Accounting manager", common.submenu_options("accounting"), "Go back to the main menu")
     option = ui.get_inputs(["Please enter a number: "], "")[0]
     if option == "1":
         add(table)
     elif option == "2":
-        id_ = input("Enter id to remove: ")
+        id_ = ui.get_inputs(["Enter id to remove: "], "")
         remove(table, id_)
     elif option == "3":
-        id_ = input("Enter id to update: ")
+        id_ = ui.get_inputs(["Enter id to update: "], "")
         update(table, id_)
+    elif option == "4":
+        which_year_max(table)
+    elif option == "5":
+        year = ui.get_inputs(["Enter year: "], "")[0]
+        avg_amount(table, year)
     elif option == "0":
         pass
 
 
 def show_table(table):
-    """
-    Display a table
-
-    Args:
-        table (list): list of lists to be displayed.
-
-    Returns:
-        None
-    """
-
-    title_list = ["id", "month", "day", "year", "type", "amount"]
     ui.print_table(table, title_list)
 
 
 def add(table):
-    """
-    Asks user for input and adds it into the table.
-
-    Args:
-        table (list): table to add new record to
-
-    Returns:
-        list: Table with a new record
-    """
-
-    # your code
-
+    global title_list
+    inputs = []
+    title_list = [title + ": " for title in title_list]
+    id_ = common.generate_random(table)
+    inputs.append(id_)
+    inputs += ui.get_inputs(title_list[1:], "Please enter the requested information")
+    table.append(inputs)
+    del table[0]
+    data_manager.write_table_to_file(filename, table)
+    ui.print_result("Added.\n", "")
     return table
 
 
 def remove(table, id_):
-    """
-    Remove a record with a given id from the table.
-
-    Args:
-        table (list): table to remove a record from
-        id_ (str): id of a record to be removed
-
-    Returns:
-        list: Table without specified record.
-    """
-
-    # your code
+    for item in table:
+        if id_[0] == item[0]:
+            table.remove(item)
+    del table[0]
+    data_manager.write_table_to_file(filename, table)
+    ui.print_result("Item removed.\n", "")
 
     return table
 
 
 def update(table, id_):
-    """
-    Updates specified record in the table. Ask users for new data.
-
-    Args:
-        table (list): list in which record should be updated
-        id_ (str): id of a record to update
-
-    Returns:
-        list: table with updated record
-    """
-
-    # your code
+    global title_list
+    inputs = []
+    title_list = [title + ": " for title in title_list]
+    ui.print_result("{0} selected.".format(id_[0]), "")
+    inputs.append(id_[0])
+    inputs += ui.get_inputs(title_list[1:], "Please enter the requested information to update {0}".format(id_[0]))
+    index = 0    
+    for item in table:
+        if inputs[0] == item[0]:
+            table[index] = inputs
+        index += 1
+    del table[0]
+    data_manager.write_table_to_file(filename, table)
+    ui.print_result("Info updated.\n", "")
 
     return table
 
@@ -115,18 +95,27 @@ def update(table, id_):
 # ------------------
 
 def which_year_max(table):
-    """
-    Question: Which year has the highest profit? (profit = in - out)
+    highest_profit_year = 0
+    highest_profit = 0
+    del table[0]
 
-    Args:
-        table (list): data table to work on
-
-    Returns:
-        number
-    """
-
-    # your code
-
+    years = {line[3] for line in table}
+    for year in years:
+        in_ = 0
+        out = 0
+        profit = 0
+        for line in table:
+            if int(year) == int(line[3]):
+                if line[4] == "in":
+                    in_ += int(line[5])
+                elif line[4] == "out":
+                    out += int(line[5])
+        profit = in_ - out
+        if profit > highest_profit:
+            highest_profit = profit
+            highest_profit_year = int(year)
+    ui.print_result("The highest profit year was {0}".format(highest_profit_year), "")
+    return highest_profit_year
 
 def avg_amount(table, year):
     """
@@ -140,4 +129,4 @@ def avg_amount(table, year):
         number
     """
 
-    # your code
+    pass
